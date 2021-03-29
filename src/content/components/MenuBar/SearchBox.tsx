@@ -8,7 +8,7 @@ import {
   identity
 } from 'observable-hooks'
 import { merge, combineLatest } from 'rxjs'
-import { filter, map, distinctUntilChanged, mapTo } from 'rxjs/operators'
+import { filter, map, distinctUntilChanged, mapTo, delay } from 'rxjs/operators'
 import { focusBlur } from '@/_helpers/observables'
 import { message } from '@/_helpers/browser-api'
 import { Suggest } from './Suggest'
@@ -30,7 +30,7 @@ export interface SearchBoxProps {
 }
 
 /**
- * Seach box
+ * Search box
  */
 export const SearchBox: FC<SearchBoxProps> = props => {
   // Textarea also shares the text so only replace here
@@ -44,21 +44,23 @@ export const SearchBox: FC<SearchBoxProps> = props => {
     focusBlur
   )
 
-  const [onShowSugget, onShowSugget$] = useObservableCallback<boolean>(identity)
+  const [onShowSuggest, onShowSuggest$] = useObservableCallback<boolean>(
+    identity
+  )
 
   const isShowSuggest = useObservableState(
     useObservable(
       inputs$ =>
-        combineLatest(
+        combineLatest([
           inputs$,
           merge(
             // only show suggest when start typing
             searchBoxFocusBlur$.pipe(filter(isFocus => !isFocus)),
             suggestFocusBlur$,
-            onShowSugget$,
+            onShowSuggest$.pipe(delay(0)), // Prevent input method conflict on first input #1149
             message.createStream('SEARCH_TEXT_BOX').pipe(mapTo(false))
           )
-        ).pipe(
+        ]).pipe(
           map(([[enableSuggest, text], shouldShowSuggest]) =>
             Boolean(enableSuggest && text && shouldShowSuggest)
           ),
@@ -79,7 +81,7 @@ export const SearchBox: FC<SearchBoxProps> = props => {
   const focusInput = useRef(() => {
     if (inputRef.current) {
       inputRef.current.focus()
-      // Although search box is seleted on focus event
+      // Although search box is selected on focus event
       // this is needed as the box may be focused initially.
       inputRef.current.select()
     }
@@ -87,7 +89,7 @@ export const SearchBox: FC<SearchBoxProps> = props => {
 
   const searchText = (text: unknown) => {
     hasTypedRef.current = false
-    onShowSugget(false)
+    onShowSuggest(false)
     props.onSearch(typeof text === 'string' ? text : props.text)
     focusInput()
   }
@@ -113,10 +115,10 @@ export const SearchBox: FC<SearchBoxProps> = props => {
           ref={inputRef}
           onChange={e => {
             props.onInput(e.currentTarget.value)
-            onShowSugget(true)
+            onShowSuggest(true)
           }}
           onKeyDown={e => {
-            // prevent page shortkeys
+            // prevent page hot keys
             e.nativeEvent.stopPropagation()
 
             hasTypedRef.current = true
@@ -126,7 +128,7 @@ export const SearchBox: FC<SearchBoxProps> = props => {
               if (firstSuggestBtn) {
                 firstSuggestBtn.focus()
               } else {
-                onShowSugget(true)
+                onShowSuggest(true)
               }
               e.preventDefault()
               e.stopPropagation()

@@ -70,6 +70,7 @@ export const locale = {
       '注意日语与韩语也包含了汉字。法语、德语和西语也包含了英文。若取消了中文或英语而勾选了其它语言，则只匹配那些语言独有的部分，如日语只匹配假名。',
     doubleClickDelay: '双击间隔',
     mode: '普通划词',
+    defaultPinned: '出现时钉住查词面板',
     panelMode: '查词面板内部划词',
     pinMode: '查词面板钉住后划词',
     qsPanelMode: '独立窗口响应页面划词',
@@ -262,6 +263,24 @@ export const locale = {
       sync_last: '上传最近的一个生词'
     },
 
+    eudic: {
+      description:
+        '使用欧路词典同步单词前，必须先在欧路官网（my.eudic.net/home/index）创建默认生词本（一般初次手动导入会自动生成且无法删除）。注意短时间内不要频繁同步，可能会造成暂时封停。',
+      token: '授权信息',
+      getToken: '获取授权',
+      verify: '检查 授权信息',
+      verified: '成功检查 欧路授权信息',
+      enable_help:
+        '开启后每次添加生词将自动单向同步到欧路默认生词本（salad到欧路生词本），只同步新增单词本身（删除不同步）',
+      token_help:
+        '请确认设置有效的个人授权信息，否则将同步失败。可点击底部按钮检查。',
+      sync_all: '同步全部生词',
+      sync_help:
+        '将salad单词本中现有的所有生词，同步到欧路词典默认生词本中（需同时开启上方同步开关，点击保存）',
+      sync_all_confirm:
+        '注意短时间内频繁同步有可能会导致接下来一小段时间的封停，确定继续？'
+    },
+
     webdav: {
       description:
         '应用设置（包括本设置）已通过浏览器自动同步。生词本可通过本设置实现 WebDAV 同步。',
@@ -331,6 +350,8 @@ export const locale = {
   headInfo: {
     acknowledgement: {
       title: '特别鸣谢',
+      yipanhuasheng:
+        '添加韦氏词典、美国传统词典、牛津学习词典与欧路生词同步；更新 Urban 词典与 Naver 词典',
       naver: '协助添加 Naver 韩国语词典',
       shanbay: '编写扇贝词典模块',
       trans_tw: '提供部分繁体中文翻译',
