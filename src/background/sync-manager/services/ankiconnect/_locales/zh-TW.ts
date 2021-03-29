@@ -7,5 +7,9 @@ export const locale: typeof _locale = {
     deck: 'Anki 中沒有找到相應牌組。',
     notetype: 'Anki 中沒有找到相應筆記型別。',
     add: '新增單詞到 Anki 失敗。'
+  },
+  prons: {
+    shanbayAmE: '扇貝英語（美式）',
+    shanbayBrE: '扇貝英語（英式）'
   }
 }

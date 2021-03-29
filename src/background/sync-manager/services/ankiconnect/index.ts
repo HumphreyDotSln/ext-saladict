@@ -5,6 +5,7 @@ import { AddConfig, SyncService } from '../../interface'
 import { getNotebook } from '../../helpers'
 import { message } from '@/_helpers/browser-api'
 import { Message } from '@/typings/message'
+import { ankiProns } from '@/background/sync-manager/services/ankiconnect/pronunciation/anki-prons'
 
 export interface SyncConfig {
   enable: boolean
@@ -13,6 +14,7 @@ export interface SyncConfig {
   port: string
   deckName: string
   noteType: string
+  pronSource: string
   /** Note tags */
   tags: string
   escapeContext: boolean
@@ -33,6 +35,7 @@ export class Service extends SyncService<SyncConfig> {
       key: null,
       deckName: 'Saladict',
       noteType: 'Saladict Word',
+      pronSource: 'shanbayAmE',
       tags: '',
       escapeContext: true,
       escapeTrans: true,
@@ -265,7 +268,11 @@ export class Service extends SyncService<SyncConfig> {
       // Favicon
       [this.noteFileds[8]]: word.favicon || '',
       // Audio
-      [this.noteFileds[9]]: '' // @TODO
+      [this.noteFileds[9]]:
+        this.getAudio(
+          ankiProns.list[ankiProns.index[this.config.pronSource]].url,
+          word.text
+        ) || ''
     }
   }
 
@@ -343,6 +350,10 @@ export class Service extends SyncService<SyncConfig> {
       .split(/\[:: \w+ ::\](?:[\s\S]+?)(?:-{15})/)
       .map(text => this.multiline(text, escape))
       .join(`<div class="trans">${trans}</div>`)
+  }
+
+  getAudio(url: string, text: string): string {
+    return url.replace('{word}', text)
   }
 
   private _div: HTMLElement | undefined
