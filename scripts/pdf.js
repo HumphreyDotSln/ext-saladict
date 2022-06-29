@@ -12,7 +12,7 @@ if (!shell.which('git')) {
 }
 
 const cacheDir = 'pdf'
-const repoRoot = 'pdf/es5'
+const repoRoot = 'pdf'
 const publicPDFRoot = path.join(__dirname, '../assets/pdf')
 const pdfFiles = [
   'build/pdf.js',
@@ -43,7 +43,7 @@ async function startUpgrade() {
   await Promise.all(files.map(p => exists(path.join(__dirname, repoRoot, p))))
 
   shell.echo('\nModifying files.')
-  await Promise.all([modifyPDFJS(), modifyPDFWorker(), modifyViewrJS(), modifyViewerHTML()])
+  await Promise.all([modifyViewrJS(), modifyViewerHTML()])
 
   await fs.ensureDir(publicPDFRoot)
 
@@ -59,24 +59,6 @@ async function startUpgrade() {
   shell.echo('\ndone.')
 }
 
-async function modifyPDFJS() {
-  const pdfPath = path.join(__dirname, repoRoot, 'build/pdf.js')
-  let file = await fs.readFile(pdfPath, 'utf8')
-
-  file = removeRegeneratorPolyfill('pdf.js', file)
-
-  await fs.writeFile(pdfPath, file)
-}
-
-async function modifyPDFWorker() {
-  const workerPath = path.join(__dirname, repoRoot, 'build/pdf.worker.js')
-  let file = await fs.readFile(workerPath, 'utf8')
-
-  file = removeRegeneratorPolyfill('pdf.worker.js', file)
-
-  await fs.writeFile(workerPath, file)
-}
-
 async function modifyViewrJS() {
   const viewerPath = path.join(__dirname, repoRoot, 'web/viewer.js')
   let file = await fs.readFile(viewerPath, 'utf8')
@@ -84,7 +66,7 @@ async function modifyViewrJS() {
   file = '/* saladict */ window.__SALADICT_PDF_PAGE__ = true;\n' + file
 
   // change default pdf
-  const defaultPDFTester = /defaultUrl: {[\s\S]*?value: (['"]\S+?.pdf['"]),[\s\S]*?kind: OptionKind\.VIEWER/
+  const defaultPDFTester = /defaultUrl = {[\s\S]*?value: (['"]\S+?.pdf['"]),[\s\S]*?kind: OptionKind\.VIEWER/
   if (!defaultPDFTester.test(file)) {
     shell.echo('Could not locate default pdf in viewer.js')
     shell.exit(1)
@@ -104,18 +86,15 @@ async function modifyViewrJS() {
     '/* saladict */let validateFileURL = () => {};'
   )
 
-  file = removeRegeneratorPolyfill('viewer.js', file)
+  // force dark mode
+  const viewCssTester = /"viewerCssTheme": 0,/
+  if (!viewCssTester.test(file)) {
+    shell.echo('Could not locate viewerCssTheme config in viewer.js')
+    shell.exit(1)
+  }
+  file = file.replace(viewCssTester, '"viewerCssTheme": 2, /* saladict */')
 
   await fs.writeFile(viewerPath, file)
-}
-
-function removeRegeneratorPolyfill(name, file) {
-  // remove regenerator polyfill which triggers 'unsafe-eval' CSP
-  const regeneratorTester = /(^| )Function\("r"/
-  if (!regeneratorTester.test(file)) {
-    shell.echo(`Could not locate regenerator polyfill in ${name}`)
-  }
-  return file.replace(regeneratorTester, '/* saladict */ // Function("r"')
 }
 
 async function modifyViewerHTML() {
@@ -134,6 +113,7 @@ async function modifyViewerHTML() {
     <!-- Saladict -->
     <script src="/assets/browser-polyfill.min.js"></script>
     <script src="/assets/inject-dict-panel.js"></script>
+    <script src="/assets/vimium-c-injector.js"></script>
   </body>
 `
   )
