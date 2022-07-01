@@ -327,7 +327,6 @@ export const locale: typeof _locale = {
       noteType: '筆記型別',
       noteType_help:
         'Anki 筆記型別包括一套欄位和卡片型別。如果不存在的話可以點下方「檢查 Anki Connect」讓本設定生成一套預設的筆記型別。如需自行在 Anki 新增或修改卡片模板請不要更改欄位名字。',
-      pronSource: '單詞發音',
       tags: '標籤',
       tags_help: 'Anki 筆記可以附帶標籤。以逗號分割。',
       escapeHTML: '轉義 HTML',

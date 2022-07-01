@@ -323,7 +323,6 @@ export const locale = {
       noteType: '笔记类型',
       noteType_help:
         'Anki 笔记类型包括一套字段和卡片类型。如果不存在的话可以点下方「检查 Anki Connect」让本设置生成一套默认的笔记类型。如需自行在 Anki 添加或修改卡片模板请不要更改字段名字。',
-      pronSource: '单词发音',
       tags: '标签',
       tags_help: 'Anki 笔记可以附带标签。以逗号分割。',
       escapeHTML: '转义 HTML',

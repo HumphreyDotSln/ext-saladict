@@ -5,9 +5,5 @@ export const locale = {
     deck: 'Anki 中没有找到相应牌组。',
     notetype: 'Anki 中没有找到相应笔记类型。',
     add: '添加单词到 Anki 失败。'
-  },
-  prons: {
-    shanbayAmE: '扇贝英语（美式）',
-    shanbayBrE: '扇贝英语（英式）'
   }
 }

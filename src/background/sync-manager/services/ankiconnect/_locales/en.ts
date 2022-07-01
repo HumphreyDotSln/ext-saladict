@@ -7,9 +7,5 @@ export const locale: typeof _locale = {
     deck: 'Deck not found in Anki.',
     notetype: 'Note type not found in Anki.',
     add: 'Failed to add word to Anki.'
-  },
-  prons: {
-    shanbayAmE: 'ShanBay(AmE)',
-    shanbayBrE: 'ShanBay(BrE)'
   }
 }
