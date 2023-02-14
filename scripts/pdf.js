@@ -84,12 +84,12 @@ async function modifyViewrJS() {
   file = file.replace(validateTester, '/* saladict */')
 
   // force dark mode
-  const viewCssTester = /"viewerCssTheme": 0,/
-  if (!viewCssTester.test(file)) {
-    shell.echo('Could not locate viewerCssTheme config in viewer.js')
-    shell.exit(1)
-  }
-  file = file.replace(viewCssTester, '"viewerCssTheme": 2, /* saladict */')
+  // const viewCssTester = /"viewerCssTheme": 0,/
+  // if (!viewCssTester.test(file)) {
+  //   shell.echo('Could not locate viewerCssTheme config in viewer.js')
+  //   shell.exit(1)
+  // }
+  // file = file.replace(viewCssTester, '"viewerCssTheme": 2, /* saladict */')
 
   await fs.writeFile(viewerPath, file)
 }
